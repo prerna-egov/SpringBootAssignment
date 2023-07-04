@@ -6,18 +6,21 @@ public class User {
     private String gender;
     private String mobileNumber;
     private String address;
+    private boolean isActive;
 
 
     public User() {
 
     }
 
-    public User(int id, String name, String gender, String mobileNumber, String address) {
+
+    public User(int id, String name, String gender, String mobileNumber, String address, boolean isActive) {
         this.id = id;
         this.name = name;
         this.gender = gender;
         this.mobileNumber = mobileNumber;
         this.address = address;
+        this.isActive = isActive;
     }
 
     public int getId() {
@@ -58,5 +61,13 @@ public class User {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean active) {
+        isActive = active;
     }
 }
