@@ -13,4 +13,6 @@ public interface UserRepository {
     int updateUser(User userInfo);
 
     int deleteUser(User userInfo);
+
+    boolean ifExistingUser(User userInfo);
 }

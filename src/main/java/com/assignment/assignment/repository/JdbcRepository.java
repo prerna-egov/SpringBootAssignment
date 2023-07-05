@@ -53,13 +53,21 @@ public class JdbcRepository implements UserRepository {
 
     @Override
     public int updateUser(User user) {
-        return jdbcTemplate.update("UPDATE users SET id = ?, name = ?, gender = ?, mobileNumber = ?, address = ?, isActive = ?",
-                user.getId(), user.getName(), user.getGender(), user.getMobileNumber(), user.getAddress(), user.getIsActive());
+        return jdbcTemplate.update("UPDATE users SET name = ?, gender = ?, mobileNumber = ?, address = ?, isActive = ?",
+                 user.getName(), user.getGender(), user.getMobileNumber(), user.getAddress(), user.getIsActive());
     }
 
     @Override
     public int deleteUser(User user) {
         return jdbcTemplate.update("DELETE FROM users WHERE id = ? AND name = ? AND gender = ? AND mobileNumber = ? AND address = ? AND isActive = ?",
                 user.getId(), user.getName(), user.getGender(), user.getMobileNumber(), user.getAddress(), user.getIsActive());
+    }
+
+    public boolean ifExistingUser(User user){
+        String sql = "SELECT COUNT(*) FROM users WHERE name = ? AND mobileNumber = ? ";
+        Object[] params = { user.getName(), user.getMobileNumber() };
+        int count = jdbcTemplate.queryForObject(sql, params, Integer.class);
+
+        return count > 0;
     }
 }

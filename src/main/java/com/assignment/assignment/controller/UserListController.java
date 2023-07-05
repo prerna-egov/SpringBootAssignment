@@ -33,29 +33,35 @@ public class UserListController {
     @PostMapping("/users")
     public ResponseEntity<String> createUser(@RequestBody User user) {
 
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String apiUrl = "https://random-data-api.com/api/v2/users?size=1";
-            ResponseEntity<String>  response = restTemplate.getForEntity(apiUrl, String.class);
-            String addressJson = null;
-            String apiResponse = response.getBody();
-             {
-                if (apiResponse != null){
+        if (userRepository.ifExistingUser(user)){
+            return new ResponseEntity<>("User with the same name and mobile number already exists.", HttpStatus.BAD_REQUEST);
+        }
+        else {
 
-                    JsonNode rootNode =  objectMapper.readTree(apiResponse);
-                    JsonNode addressNode = rootNode.get("address");
-                    Address address = objectMapper.treeToValue(addressNode, Address.class);
-                    user.setAddress(address);
-                    System.out.println(user.getAddress().toString());
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                String apiUrl = "https://random-data-api.com/api/v2/users?size=1";
+                ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
+                String addressJson = null;
+                String apiResponse = response.getBody();
+                {
+                    if (apiResponse != null) {
+
+                        JsonNode rootNode = objectMapper.readTree(apiResponse);
+                        JsonNode addressNode = rootNode.get("address");
+                        Address address = objectMapper.treeToValue(addressNode, Address.class);
+                        user.setAddress(address);
+                        System.out.println(user.getAddress().toString());
+                    }
                 }
+
+                userRepository.createUser(user);
+
+                return new ResponseEntity<>("User was created successfully", HttpStatus.CREATED);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
-            userRepository.createUser(user);
-
-            return new ResponseEntity<>("User was created successfully", HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
