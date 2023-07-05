@@ -1,24 +1,26 @@
 package com.assignment.assignment.model;
 
+import java.util.UUID;
+
 public class UserSearchCriteria {
 
-    private int id;
+    private UUID id;
     private String mobileNumber;
 
     //    public UserSearchCriteria(){
 //
 //    }
-    public UserSearchCriteria(int id, String mobileNumber) {
+    public UserSearchCriteria(UUID id, String mobileNumber) {
         this.id = id;
         this.mobileNumber = mobileNumber;
     }
 
-    public int getId() {
+    public UUID getId() {
 
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
 
         this.id = id;
     }
