@@ -1,11 +1,14 @@
 package com.assignment.assignment.model;
 
+import java.util.UUID;
+
 public class User {
-    private int id;
+    private UUID id;
     private String name;
     private String gender;
     private String mobileNumber;
-    private String address;
+    private Address address;
+    private long createdTime;
     private boolean isActive;
 
 
@@ -14,20 +17,24 @@ public class User {
     }
 
 
-    public User(int id, String name, String gender, String mobileNumber, String address, boolean isActive) {
+    public User(UUID id, String name, String gender, String mobileNumber, Address address,long createdTime, boolean isActive) {
         this.id = id;
         this.name = name;
         this.gender = gender;
         this.mobileNumber = mobileNumber;
         this.address = address;
+        this.createdTime = createdTime;
         this.isActive = isActive;
     }
 
-    public int getId() {
+    public User(String name, String gender, String mobileNumber, Address address, boolean isActive) {
+    }
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -55,12 +62,29 @@ public class User {
         this.mobileNumber = mobileNumber;
     }
 
-    public String getAddress() {
+//    public String getAddress() {
+//        return address;
+//    }
+//
+//    public void setAddress(Address address) {
+//        this.address = String.valueOf(address);
+//    }
+
+
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public long getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(long createdTime) {
+        this.createdTime = createdTime;
     }
 
     public boolean getIsActive() {
