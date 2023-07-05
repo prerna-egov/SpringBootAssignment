@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,38 +32,44 @@ public class UserListController {
     ObjectMapper objectMapper;
 
     @PostMapping("/users")
-    public ResponseEntity<String> createUser(@RequestBody User user) {
+    public ResponseEntity<List<String>> createUser(@RequestBody List<User> users) {
 
-        if (userRepository.ifExistingUser(user)){
-            return new ResponseEntity<>("User with the same name and mobile number already exists.", HttpStatus.BAD_REQUEST);
+        List<String> createStatus = new ArrayList<>();
+        for (User user : users) {
+            if (userRepository.ifExistingUser(user)){
+//                return new ResponseEntity<>("User with the same name and mobile number already exists.", HttpStatus.BAD_REQUEST);
+                createStatus.add("User with the same name " + user.getName() + " and mobile number " + user.getMobileNumber()+ " already exists");
         }
-        else {
+            else {
 
-            try {
-                RestTemplate restTemplate = new RestTemplate();
-                String apiUrl = "https://random-data-api.com/api/v2/users?size=1";
-                ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
-                String addressJson = null;
-                String apiResponse = response.getBody();
-                {
-                    if (apiResponse != null) {
+                try {
+                    RestTemplate restTemplate = new RestTemplate();
+                    String apiUrl = "https://random-data-api.com/api/v2/users?size=1";
+                    ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
+                    String addressJson = null;
+                    String apiResponse = response.getBody();
+                    {
+                        if (apiResponse != null) {
 
-                        JsonNode rootNode = objectMapper.readTree(apiResponse);
-                        JsonNode addressNode = rootNode.get("address");
-                        Address address = objectMapper.treeToValue(addressNode, Address.class);
-                        user.setAddress(address);
-                        System.out.println(user.getAddress().toString());
+                            JsonNode rootNode = objectMapper.readTree(apiResponse);
+                            JsonNode addressNode = rootNode.get("address");
+                            Address address = objectMapper.treeToValue(addressNode, Address.class);
+                            user.setAddress(address);
+                            System.out.println(user.getAddress().toString());
+                        }
                     }
+
+                    userRepository.createUser(user);
+
+//                    return new ResponseEntity<>("User was created successfully", HttpStatus.CREATED);
+                    createStatus.add("User was created successfully with name " + user.getName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-
-                userRepository.createUser(user);
-
-                return new ResponseEntity<>("User was created successfully", HttpStatus.CREATED);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+        return new ResponseEntity<>(createStatus, HttpStatus.CREATED);
     }
 
     @GetMapping("/users")
