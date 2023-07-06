@@ -34,8 +34,24 @@ public class JdbcRepository implements UserRepository {
     @Override
     public User findUser(UserSearchCriteria searchCriteria) {
         try {
-            String sql = "SELECT * FROM users WHERE id = ? AND mobileNumber = ?";
-            Object[] params = { searchCriteria.getId(), searchCriteria.getMobileNumber() };
+//            String sql = "SELECT * FROM users WHERE id = ? AND mobileNumber = ?";
+//            Object[] params = { searchCriteria.getId(), searchCriteria.getMobileNumber() };
+
+            String sql;
+            Object[] params;
+
+            if (searchCriteria.getId() != null && searchCriteria.getMobileNumber() != null) {
+                sql = "SELECT * FROM users WHERE id = ? AND mobileNumber = ?";
+                params = new Object[]{searchCriteria.getId(), searchCriteria.getMobileNumber()};
+            } else if (searchCriteria.getId() != null) {
+                sql = "SELECT * FROM users WHERE id = ?";
+                params = new Object[]{searchCriteria.getId()};
+            } else if (searchCriteria.getMobileNumber() != null) {
+                sql = "SELECT * FROM users WHERE mobileNumber = ?";
+                params = new Object[]{searchCriteria.getMobileNumber()};
+            } else {
+                throw new IllegalArgumentException("No search criteria specified");
+            }
 
             List<User> userList = jdbcTemplate.query(sql, params, new UserRowMapper());
             if (!userList.isEmpty()) {
