@@ -105,31 +105,35 @@ public class UserListController {
 //    }
 
     @PutMapping("/users/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        try {
-            UserSearchCriteria searchCriteria = new UserSearchCriteria(user.getId(), user.getMobileNumber());
-            User existingUser = userRepository.findUser(searchCriteria);
-            if (existingUser == null) {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
-//            else if (user.getId() == existingUser.getId()){
-//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-//            }
-            existingUser.setId(user.getId());
-            existingUser.setName(user.getName());
-            existingUser.setGender(user.getGender());
-            existingUser.setMobileNumber(user.getMobileNumber());
-//            existingUser.setCreatedTime(user.getCreatedTime());
-            existingUser.setIsActive(user.getIsActive());
+    public ResponseEntity <List<User>> updateUser(@RequestBody List<User> users) {
+
+        List<User> updatedUsers = new ArrayList<>();
+
+        for (User user : users) {
+            try {
+                UserSearchCriteria searchCriteria = new UserSearchCriteria(user.getId(), user.getMobileNumber());
+                User existingUser = userRepository.findUser(searchCriteria);
+                if (existingUser == null) {
+                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                }
+
+                existingUser.setId(user.getId());
+                existingUser.setName(user.getName());
+                existingUser.setGender(user.getGender());
+                existingUser.setMobileNumber(user.getMobileNumber());
+                existingUser.setIsActive(user.getIsActive());
 
 //            userRepository.updateUser(existingUser);
-            producer.pushUpdateUser(existingUser);
+                producer.pushUpdateUser(existingUser);
 
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//                return new ResponseEntity<>(user, HttpStatus.OK);
+                updatedUsers.add(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+        return new ResponseEntity<>(updatedUsers, HttpStatus.OK);
     }
 
     @DeleteMapping("/users/delete")
