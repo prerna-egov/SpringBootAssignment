@@ -19,6 +19,7 @@ public class Producer {
     public Producer(KafkaTemplate<String, String> kafkaTemplate){
         this.kafkaTemplate = kafkaTemplate;
     }
+
     public void pushCreateUser(User user) throws JsonProcessingException {
         String userJson = objectmapper.writeValueAsString(user);
         kafkaTemplate.send("create-user", userJson);
@@ -27,5 +28,10 @@ public class Producer {
     public void pushUpdateUser(User user) throws JsonProcessingException {
         String userJson = objectmapper.writeValueAsString(user);
         kafkaTemplate.send("user-updated", userJson);
+    }
+
+    public void pushDeleteUser(User user) throws JsonProcessingException {
+        String userJson = objectmapper.writeValueAsString(user);
+        kafkaTemplate.send("delete-user", userJson);
     }
 }

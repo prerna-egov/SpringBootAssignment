@@ -101,8 +101,8 @@ public class JdbcRepository implements UserRepository {
 
     @Override
     public int deleteUser(User user) {
-        return jdbcTemplate.update("DELETE FROM users WHERE id = ? AND name = ? AND gender = ? AND mobileNumber = ? AND address = ? AND isActive = ?",
-                user.getId(), user.getName(), user.getGender(), user.getMobileNumber(), user.getAddress(), user.getIsActive());
+        return jdbcTemplate.update("DELETE FROM users WHERE id = ? AND name = ? AND gender = ? AND mobileNumber = ? AND isActive = ?",
+                user.getId(), user.getName(), user.getGender(), user.getMobileNumber(), user.getIsActive());
     }
 
     public boolean ifExistingUser(User user){

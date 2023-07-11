@@ -145,8 +145,9 @@ public class UserListController {
                 return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
             }
 
-            userRepository.deleteUser(existingUser);
-            return new ResponseEntity<>("User deleted successfully.", HttpStatus.OK);
+//            userRepository.deleteUser(existingUser);
+            producer.pushDeleteUser(existingUser);
+            return new ResponseEntity<>("User with name " + user.getName() + " was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class Consumer {
@@ -44,6 +42,17 @@ public class Consumer {
             System.out.println(userString);
             User user = objectMapper.readValue(userString, User.class);
             jdbcRepository.updateUser(user);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @KafkaListener(topics = {"delete-user"})
+    public void deleteUser(String userString) {
+        try {
+            System.out.println(userString);
+            User user = objectMapper.readValue(userString, User.class);
+            jdbcRepository.deleteUser(user);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
