@@ -95,8 +95,8 @@ public class JdbcRepository implements UserRepository {
 
     @Override
     public int updateUser(User user) {
-        return jdbcTemplate.update("UPDATE users SET name = ?, gender = ?, mobileNumber = ?, address = ?, isActive = ?",
-                 user.getName(), user.getGender(), user.getMobileNumber(), user.getAddress(), user.getIsActive());
+        return jdbcTemplate.update("UPDATE users SET name = ?, gender = ?, mobileNumber = ?, isActive = ? WHERE id = ?",
+                 user.getName(), user.getGender(), user.getMobileNumber(), user.getIsActive(), user.getId());
     }
 
     @Override

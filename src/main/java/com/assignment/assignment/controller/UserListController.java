@@ -119,8 +119,7 @@ public class UserListController {
             existingUser.setName(user.getName());
             existingUser.setGender(user.getGender());
             existingUser.setMobileNumber(user.getMobileNumber());
-            existingUser.setAddress(user.getAddress());
-            existingUser.setCreatedTime(user.getCreatedTime());
+//            existingUser.setCreatedTime(user.getCreatedTime());
             existingUser.setIsActive(user.getIsActive());
 
             userRepository.updateUser(existingUser);
