@@ -62,7 +62,7 @@ public class UserListController {
                     }
 
 //                    userRepository.createUser(user);
-                    producer.push(user);
+                    producer.pushCreateUser(user);
 
 //                    return new ResponseEntity<>("User was created successfully", HttpStatus.CREATED);
                     createStatus.add("User was created successfully with name " + user.getName());
@@ -122,7 +122,8 @@ public class UserListController {
 //            existingUser.setCreatedTime(user.getCreatedTime());
             existingUser.setIsActive(user.getIsActive());
 
-            userRepository.updateUser(existingUser);
+//            userRepository.updateUser(existingUser);
+            producer.pushUpdateUser(existingUser);
 
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {

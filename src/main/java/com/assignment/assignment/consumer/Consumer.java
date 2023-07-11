@@ -38,4 +38,15 @@ public class Consumer {
         }
     }
 
+    @KafkaListener(topics = {"user-updated"})
+    public void updateUser(String userString) {
+        try {
+            System.out.println(userString);
+            User user = objectMapper.readValue(userString, User.class);
+            jdbcRepository.updateUser(user);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
