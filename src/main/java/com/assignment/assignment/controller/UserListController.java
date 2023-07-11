@@ -3,21 +3,16 @@ package com.assignment.assignment.controller;
 import com.assignment.assignment.model.Address;
 import com.assignment.assignment.model.User;
 import com.assignment.assignment.model.UserSearchCriteria;
+import com.assignment.assignment.producer.Producer;
 import com.assignment.assignment.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +25,13 @@ public class UserListController {
     UserRepository userRepository;
     @Autowired
     ObjectMapper objectMapper;
+
+    private final Producer producer;
+
+    @Autowired
+    public UserListController(Producer producer) {
+        this.producer = producer;
+    }
 
     @PostMapping("/users")
     public ResponseEntity<List<String>> createUser(@RequestBody List<User> users) {
@@ -59,7 +61,8 @@ public class UserListController {
                         }
                     }
 
-                    userRepository.createUser(user);
+//                    userRepository.createUser(user);
+                    producer.push(user);
 
 //                    return new ResponseEntity<>("User was created successfully", HttpStatus.CREATED);
                     createStatus.add("User was created successfully with name " + user.getName());
@@ -76,6 +79,7 @@ public class UserListController {
     public ResponseEntity<User> getUser(@RequestBody UserSearchCriteria searchCriteria) {
         try {
             User user = userRepository.findUser(searchCriteria);
+//            User user1 = userRepository.findUserByActiveStatus(searchCriteria);
             if (user == null) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
@@ -85,6 +89,20 @@ public class UserListController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+//    @GetMapping("/users")
+//    public ResponseEntity<User> getUserByActiveStatus(@RequestBody UserSearchCriteria searchCriteria) {
+//        try {
+//            User user = userRepository.findUserByActiveStatus(searchCriteria);
+//            if (user == null) {
+//                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//            }
+//            return new ResponseEntity<>(user, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @PutMapping("/users/update")
     public ResponseEntity<User> updateUser(@RequestBody User user) {

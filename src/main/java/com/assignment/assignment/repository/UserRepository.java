@@ -10,6 +10,8 @@ public interface UserRepository {
 
     User findUser(UserSearchCriteria searchCriteria);
 
+    User findUserByActiveStatus(UserSearchCriteria searchCriteria);
+
     int updateUser(User userInfo);
 
     int deleteUser(User userInfo);

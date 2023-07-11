@@ -49,7 +49,7 @@ public class JdbcRepository implements UserRepository {
             } else if (searchCriteria.getMobileNumber() != null) {
                 sql = "SELECT * FROM users WHERE mobileNumber = ?";
                 params = new Object[]{searchCriteria.getMobileNumber()};
-            } else {
+            }else {
                 throw new IllegalArgumentException("No search criteria specified");
             }
 
@@ -63,6 +63,32 @@ public class JdbcRepository implements UserRepository {
 //                    BeanPropertyRowMapper.newInstance(User.class), searchCriteria.getId(), searchCriteria.getMobileNumber());
 //            return user;
         } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public User findUserByActiveStatus(UserSearchCriteria searchCriteria) {
+        try{
+            String sql;
+            Object[] params;
+
+            if (searchCriteria.getIsActive()){
+                sql = "SELECT * FROM users_active";
+                params = new Object[]{searchCriteria.getIsActive()};
+            }
+            else {
+                sql = "SELECT * FROM users_inActive";
+                params = new Object[]{searchCriteria.getIsActive()};
+            }
+            List<User> userList = jdbcTemplate.query(sql, params, new UserRowMapper());
+            if (!userList.isEmpty()) {
+                return userList.get(0);
+            } else {
+                return null;
+            }
+        }
+        catch (IncorrectResultSizeDataAccessException e) {
             return null;
         }
     }
